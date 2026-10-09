@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Halcyon Capital — Espace client</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #0a0b0d;
+  --bg-card: #111318;
+  --bg-input: #0d0f14;
+  --border: #1e2230;
+  --border-focus: #3b82f6;
+  --text: #e8eaf0;
+  --text-muted: #6b7280;
+  --text-dim: #9ca3af;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --green: #10b981;
+  --green-bg: rgba(16,185,129,0.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.08);
+  --yellow: #f59e0b;
+  --mono: 'JetBrains Mono', monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-inline: 24px;
+  padding-block: 32px;
+}
+.page { max-width: 520px; margin: 0 auto; }
+
+.header { text-align: center; margin-bottom: 40px; }
+.logo-wrap {
+  width: 56px; height: 56px; margin: 0 auto 16px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800; color: white;
+  box-shadow: 0 8px 24px rgba(59,130,246,0.25);
+}
+.header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+.header p { font-size: 13px; color: var(--text-muted); max-width: 340px; margin: 0 auto; }
+
+.connect-banner {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-bottom: 24px;
+}
+.wallet-info { display: flex; align-items: center; gap: 10px; }
+.wallet-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.wallet-addr { font-family: var(--mono); font-size: 12px; color: var(--text); }
+.wallet-net { font-size: 11px; color: var(--text-muted); }
+.wallet-balance { text-align: right; }
+.wallet-balance-val { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.wallet-balance-label { font-size: 11px; color: var(--text-muted); }
+
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 16px;
+}
+.tabs { display: flex; border-bottom: 1px solid var(--border); }
+.tab {
+  flex: 1; padding: 14px; text-align: center;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  color: var(--text-muted); border-bottom: 2px solid transparent;
+  transition: all 0.15s; margin-bottom: -1px;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.form-body { padding: 24px; }
+.vault-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+.stat-box {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+}
+.stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; }
+.stat-val { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stat-val.green { color: var(--green); }
+
+.input-group { margin-bottom: 20px; }
+.input-label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; font-weight: 600; color: var(--text-dim);
+  margin-bottom: 8px; letter-spacing: 0.03em;
+}
+.input-max {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  color: var(--accent); font-size: 11px; padding: 2px 8px;
+  cursor: pointer; font-family: inherit; font-weight: 600; transition: all 0.15s;
+}
+.input-max:hover { background: rgba(59,130,246,0.1); }
+.input-wrap {
+  position: relative; display: flex; align-items: center;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; transition: border-color 0.15s;
+}
+.input-wrap:focus-within { border-color: var(--border-focus); }
+.input-wrap input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-family: var(--mono); font-size: 18px;
+  font-weight: 600; padding: 14px 16px; width: 100%;
+}
+.input-wrap input::placeholder { color: var(--text-muted); font-size: 15px; }
+.input-tag {
+  padding: 0 16px; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); white-space: nowrap;
+  border-left: 1px solid var(--border);
+  height: 100%; display: flex; align-items: center;
+}
+.slider-row { display: flex; gap: 8px; margin-top: 10px; }
+.pct-btn {
+  flex: 1; padding: 6px; background: var(--bg-input);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text-muted); font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 0.15s; text-align: center;
+}
+.pct-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.preview {
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.preview-row { display: flex; justify-content: space-between; font-size: 13px; }
+.preview-label { color: var(--text-muted); }
+.preview-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.btn-primary {
+  width: 100%; padding: 15px; background: var(--accent); color: white;
+  border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: inherit; letter-spacing: -0.01em;
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.3); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-connect {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white; border: none; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: inherit; transition: all 0.15s;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.2);
+}
+.btn-connect:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(59,130,246,0.35); }
+
+.steps { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+.step { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+  background: var(--border); color: var(--text-muted);
+}
+.step.active .step-num { background: var(--accent); color: white; }
+.step.done .step-num { background: var(--green); color: white; content: '✓'; }
+.step.active { color: var(--text); }
+.step-sep { flex: 1; height: 1px; background: var(--border); }
+
+.alert {
+  border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 16px;
+  align-items: flex-start; gap: 10px; display: none;
+}
+.alert.show { display: flex; }
+.alert-success { background: var(--green-bg); border: 1px solid rgba(16,185,129,0.2); color: var(--green); }
+.alert-error { background: var(--red-bg); border: 1px solid rgba(239,68,68,0.2); color: var(--red); }
+.alert-icon { font-size: 16px; flex-shrink: 0; }
+.alert-text a { color: inherit; font-family: var(--mono); font-size: 11px; }
+
+.position-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px;
+}
+.position-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+.position-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.position-row:last-child { border-bottom: none; padding-bottom: 0; }
+.position-label { font-size: 13px; color: var(--text-muted); }
+.position-val { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 12px; line-height: 1.8; }
+.footer strong { color: var(--text-dim); }
+
+.spinner {
+  width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: none;
+}
+.spinner.show { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.network-warn {
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px; padding: 12px 16px;
+  color: var(--yellow); font-size: 13px; margin-bottom: 16px; display: none;
+}
+.network-warn.show { display: flex; align-items: center; gap: 10px; }
+
+@media (max-width: 420px) {
+  body { padding-inline: 16px; }
+  .vault-stats { grid-template-columns: 1fr; }
+  .connect-banner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="logo-wrap">H</div>
+    <h1>Halcyon Capital</h1>
+    <p>Stratégie quantitative propriétaire, market-neutral — rendements stables, risque maîtrisé.</p>
+  </div>
+
+  <div id="connectSection">
+    <div class="card" style="padding:24px;text-align:center;margin-bottom:24px;">
+      <div style="font-size:32px;margin-bottom:12px;">🦊</div>
+      <div style="font-weight:600;margin-bottom:6px;">Connecte ton compte sécurisé</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">MetaMask requis — compte sécurisé Halcyon</div>
+      <button class="btn-connect" onclick="connectWallet()">Connecter mon compte</button>
+    </div>
+  </div>
+
+  <div id="appSection" style="display:none;">
+    <div class="connect-banner" id="walletBanner">
+      <div class="wallet-info">
+        <div class="wallet-avatar" id="walletAvatar">?</div>
+        <div>
+          <div class="wallet-addr" id="walletAddr">—</div>
+          <div class="wallet-net" id="walletNet">—</div>
+        </div>
+      </div>
+      <div class="wallet-balance">
+        <div class="wallet-balance-val" id="walletUsdcBal">— USDC</div>
+        <div class="wallet-balance-label">Solde disponible</div>
+      </div>
+    </div>
+
+    <div class="network-warn" id="networkWarn">
+      ⚠️ Mauvais réseau. <span style="cursor:pointer;text-decoration:underline;margin-left:4px;" onclick="switchNetwork()">Basculer sur le réseau Halcyon →</span>
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <div class="tab active" id="tabDeposit" onclick="switchTab('deposit')">Déposer</div>
+        <div class="tab" id="tabWithdraw" onclick="switchTab('withdraw')">Retirer</div>
+      </div>
+      <div class="form-body">
+        <div class="vault-stats">
+          <div class="stat-box">
+            <div class="stat-label">Fonds total géré</div>
+            <div class="stat-val green" id="vaultTotal">—</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Valeur / part</div>
+            <div class="stat-val" id="navShare">—</div>
+          </div>
+        </div>
+
+        <div class="steps" id="stepsRow">
+          <div class="step active" id="step1"><div class="step-num">1</div>Montant</div>
+          <div class="step-sep"></div>
+          <div class="step" id="step2"><div class="step-num">2</div>Approuver</div>
+          <div class="step-sep"></div>
+          <div class="step" id="step3"><div class="step-num">3</div>Confirmer</div>
+        </div>
+
+        <div class="alert" id="alertBox">
+          <div class="alert-icon" id="alertIcon">✓</div>
+          <div class="alert-text" id="alertText"></div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-label">
+            <span id="inputLabel">Montant à déposer</span>
+            <button class="input-max" onclick="setMax()">MAX</button>
+          </div>
+          <div class="input-wrap">
+            <input type="number" id="amountInput" placeholder="0.00" min="0" step="0.01" oninput="onAmountChange()">
+            <div class="input-tag">USDC</div>
+          </div>
+          <div class="slider-row">
+            <button class="pct-btn" onclick="setPct(25)">25%</button>
+            <button class="pct-btn" onclick="setPct(50)">50%</button>
+            <button class="pct-btn" onclick="setPct(75)">75%</button>
+            <button class="pct-btn" onclick="setPct(100)">100%</button>
+          </div>
+        </div>
+
+        <div class="preview" id="preview">
+          <div class="preview-row">
+            <span class="preview-label" id="prevLabel1">Parts reçues (estimé)</span>
+            <span class="preview-val" id="prevVal1">—</span>
+          </div>
+          <div class="preview-row" id="prevRow2">
+            <span class="preview-label">Autorisation actuelle</span>
+            <span class="preview-val" id="prevVal2">—</span>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">Compte</span>
+            <span class="preview-val">Compte sécurisé Halcyon</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="actionBtn" onclick="handleAction()" disabled>
+          <span id="btnText">Entrer un montant</span>
+          <div class="spinner" id="btnSpinner"></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="position-card">
+      <div class="position-title">Ma position</div>
+      <div class="position-row">
+        <span class="position-label">Parts détenues</span>
+        <span class="position-val" id="myShares">—</span>
+      </div>
+      <div class="position-row">
+        <span class="position-label">Valeur estimée</span>
+        <span class="position-val" id="myValue">— USDC</span>
+      </div>
+      <div class="position-row">
+        <span class="position-label">% du fonds</span>
+        <span class="position-val" id="myPct">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <strong>Halcyon Capital</strong> · Compte sécurisé dédié<br>
+    Les performances passées ne préjugent pas des performances futures.
+  </div>
+</div>
+
+<script>
+const RPC = 'https://rpc.hyperliquid.xyz/evm';
+const VAULT = '0xfb59ff77756978521570216a0cc9d9b5e67a1247';
+const USDC = '0xb88339CB7199b77E23DB6E890353E22632Ba630f';
+const HL_CHAIN_ID = '0x3E7';
+
+let account = null;
+let usdcBalance = 0n;
+let shareBalance = 0n;
+let totalSupply = 0n;
+let totalAssets = 0n;
+let currentTab = 'deposit';
+let approveState = false;
+
+async function rpc(method, params) {
+  const r = await fetch(RPC, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({jsonrpc:'2.0',id:1,method,params})
+  });
+  const j = await r.json();
+  if (j.error) throw new Error(j.error.message);
+  return j.result;
+}
+
+function call(to, data, from) {
+  const tx = {to, data};
+  if (from) tx.from = from;
+  return rpc('eth_call', [tx, 'latest']);
+}
+
+function hexToBig(h) { return BigInt(h || '0x0'); }
+function fmtUsdc(raw) {
+  const n = Number(raw) / 1e6;
+  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:4}) + ' USDC';
+}
+function fmtShares(raw) {
+  const n = Number(raw) / 1e18;
+  return n.toLocaleString('fr-FR', {minimumFractionDigits:4, maximumFractionDigits:8});
+}
+function shortAddr(a) { return a.slice(0,6)+'…'+a.slice(-4); }
+function encodeAddr(addr) { return addr.slice(2).toLowerCase().padStart(64,'0'); }
+function encodeUint256(val) { return val.toString(16).padStart(64,'0'); }
+
+async function connectWallet() {
+  if (!window.ethereum) {
+    showAlert('error','MetaMask non détecté. Installe l\'extension MetaMask.');
+    return;
+  }
+  try {
+    const accounts = await window.ethereum.request({method:'eth_requestAccounts'});
+    account = accounts[0];
+    document.getElementById('connectSection').style.display = 'none';
+    document.getElementById('appSection').style.display = 'block';
+    updateWalletUI();
+    await checkNetwork();
+    await loadVaultData();
+    await loadUserData();
+    window.ethereum.on('accountsChanged', a => { account = a[0]; updateWalletUI(); loadUserData(); });
+    window.ethereum.on('chainChanged', () => { checkNetwork(); loadVaultData(); loadUserData(); });
+  } catch(e) {
+    showAlert('error', e.message || 'Connexion refusée');
+  }
+}
+
+function updateWalletUI() {
+  if (!account) return;
+  document.getElementById('walletAddr').textContent = shortAddr(account);
+  document.getElementById('walletAvatar').textContent = account.slice(2,4).toUpperCase();
+}
+
+async function checkNetwork() {
+  const chainId = await window.ethereum.request({method:'eth_chainId'});
+  const warn = document.getElementById('networkWarn');
+  const net = document.getElementById('walletNet');
+  if (chainId === HL_CHAIN_ID) {
+    warn.classList.remove('show');
+    net.textContent = 'Compte sécurisé Halcyon ✓';
+    net.style.color = 'var(--green)';
+  } else {
+    warn.classList.add('show');
+    net.textContent = 'Mauvais réseau ('+parseInt(chainId,16)+')';
+    net.style.color = 'var(--yellow)';
+  }
+}
+
+async function switchNetwork() {
+  try {
+    await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:HL_CHAIN_ID}]});
+  } catch(e) {
+    if (e.code === 4902) {
+      await window.ethereum.request({method:'wallet_addEthereumChain', params:[{
+        chainId: HL_CHAIN_ID,
+        chainName: 'Halcyon Secure Network',
+        nativeCurrency: {name:'HYPE', symbol:'HYPE', decimals:18},
+        rpcUrls: ['https://rpc.hyperliquid.xyz/evm'],
+        blockExplorerUrls: ['https://explorer.hyperliquid.xyz']
+      }]});
+    }
+  }
+}
+
+async function loadVaultData() {
+  try {
+    const [tsHex, taHex] = await Promise.all([
+      call(VAULT, '0x18160ddd'),
+      call(VAULT, '0x01e1d114')
+    ]);
+    totalSupply = hexToBig(tsHex);
+    totalAssets = hexToBig(taHex);
+    document.getElementById('vaultTotal').textContent = (Number(totalAssets)/1e6).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' USDC';
+    const nav = totalSupply > 0n ? (totalAssets * 10n**18n) / totalSupply : 10n**18n;
+    document.getElementById('navShare').textContent = (Number(nav)/1e18).toLocaleString('fr-FR',{minimumFractionDigits:6}) + ' USDC';
+  } catch(e) { console.error('loadVaultData', e); }
+}
+
+async function loadUserData() {
+  if (!account) return;
+  try {
+    const [usdcHex, sharesHex, allowHex] = await Promise.all([
+      call(USDC, '0x70a08231' + encodeAddr(account)),
+      call(VAULT, '0x70a08231' + encodeAddr(account)),
+      call(USDC, '0xdd62ed3e' + encodeAddr(account) + encodeAddr(VAULT))
+    ]);
+    usdcBalance = hexToBig(usdcHex);
+    shareBalance = hexToBig(sharesHex);
+    const allowance = hexToBig(allowHex);
+    document.getElementById('walletUsdcBal').textContent = (Number(usdcBalance)/1e6).toLocaleString('fr-FR',{minimumFractionDigits:2}) + ' USDC';
+    document.getElementById('myShares').textContent = fmtShares(shareBalance);
+    const myVal = totalSupply > 0n ? (shareBalance * totalAssets) / totalSupply : 0n;
+    document.getElementById('myValue').textContent = fmtUsdc(myVal);
+    const pct = totalSupply > 0n ? (Number(shareBalance) * 100 / Number(totalSupply)).toFixed(4) : '0';
+    document.getElementById('myPct').textContent = pct + ' %';
+    document.getElementById('prevVal2').textContent = fmtUsdc(allowance);
+    onAmountChange();
+  } catch(e) { console.error('loadUserData', e); }
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  approveState = false;
+  document.getElementById('tabDeposit').classList.toggle('active', tab==='deposit');
+  document.getElementById('tabWithdraw').classList.toggle('active', tab==='withdraw');
+  document.getElementById('inputLabel').textContent = tab==='deposit' ? 'Montant à déposer' : 'Parts à retirer';
+  document.getElementById('prevLabel1').textContent = tab==='deposit' ? 'Parts reçues (estimé)' : 'USDC reçus (estimé)';
+  document.getElementById('prevRow2').style.display = tab==='deposit' ? '' : 'none';
+  document.getElementById('stepsRow').style.display = tab==='deposit' ? '' : 'none';
+  document.getElementById('amountInput').value = '';
+  hideAlert();
+  onAmountChange();
+}
+
+function setMax() {
+  const input = document.getElementById('amountInput');
+  if (currentTab === 'deposit') input.value = (Number(usdcBalance)/1e6).toFixed(6);
+  else input.value = (Number(shareBalance)/1e18).toFixed(8);
+  onAmountChange();
+}
+
+function setPct(pct) {
+  const input = document.getElementById('amountInput');
+  if (currentTab === 'deposit') input.value = (Number(usdcBalance) * pct / 100 / 1e6).toFixed(6);
+  else input.value = (Number(shareBalance) * pct / 100 / 1e18).toFixed(8);
+  onAmountChange();
+}
+
+function onAmountChange() {
+  const val = parseFloat(document.getElementById('amountInput').value || '0');
+  const btn = document.getElementById('actionBtn');
+  const btnText = document.getElementById('btnText');
+  if (!val || val <= 0) {
+    btn.disabled = true; btnText.textContent = 'Entrer un montant';
+    document.getElementById('prevVal1').textContent = '—'; return;
+  }
+  if (currentTab === 'deposit') {
+    const assets = BigInt(Math.floor(val * 1e6));
+    const shares = totalSupply > 0n && totalAssets > 0n ? (assets * totalSupply) / totalAssets : assets * 10n**12n;
+    document.getElementById('prevVal1').textContent = fmtShares(shares) + ' parts';
+    if (assets > usdcBalance) { btn.disabled = true; btnText.textContent = 'Solde insuffisant'; return; }
+    btn.disabled = false;
+    btnText.textContent = approveState ? '2. Déposer dans le compte' : '1. Autoriser le montant';
+  } else {
+    const shares = BigInt(Math.floor(val * 1e18));
+    const usdc = totalSupply > 0n ? (shares * totalAssets) / totalSupply : 0n;
+    document.getElementById('prevVal1').textContent = fmtUsdc(usdc);
+    if (shares > shareBalance) { btn.disabled = true; btnText.textContent = 'Parts insuffisantes'; return; }
+    btn.disabled = false; btnText.textContent = 'Retirer mes fonds';
+  }
+}
+
+function setStep(n) {
+  for (let i=1;i<=3;i++) {
+    const el = document.getElementById('step'+i);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i===n) el.classList.add('active');
+  }
+}
+
+async function handleAction() {
+  if (currentTab === 'deposit') {
+    if (!approveState) await doApprove();
+    else await doDeposit();
+  } else {
+    await doWithdraw();
+  }
+}
+
+function setBusy(busy) {
+  document.getElementById('actionBtn').disabled = busy;
+  document.getElementById('btnSpinner').classList.toggle('show', busy);
+}
+
+async function doApprove() {
+  const val = parseFloat(document.getElementById('amountInput').value);
+  if (!val) return;
+  const assets = BigInt(Math.floor(val * 1e6));
+  setBusy(true); setStep(2); hideAlert();
+  try {
+    const data = '0x095ea7b3' + encodeAddr(VAULT) + encodeUint256(assets);
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: account, to: USDC, data, gas: '0x186A0' }]
+    });
+    showAlert('success', 'Autorisation envoyée, en attente de confirmation…');
+    await waitTx(txHash);
+    approveState = true;
+    document.getElementById('btnText').textContent = '2. Déposer dans le compte';
+    setStep(3);
+    await loadUserData();
+  } catch(e) {
+    showAlert('error', e.message || 'Autorisation annulée');
+    setStep(1);
+  }
+  setBusy(false);
+}
+
+async function doDeposit() {
+  const val = parseFloat(document.getElementById('amountInput').value);
+  if (!val) return;
+  const assets = BigInt(Math.floor(val * 1e6));
+  setBusy(true); hideAlert();
+  try {
+    const data = '0x6e553f65' + encodeUint256(assets) + encodeAddr(account);
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: account, to: VAULT, data, gas: '0x493E0' }]
+    });
+    showAlert('success', 'Dépôt en cours, confirmation attendue…');
+    await waitTx(txHash);
+    approveState = false;
+    document.getElementById('amountInput').value = '';
+    setStep(1);
+    await loadVaultData();
+    await loadUserData();
+    showAlert('success', '✅ Dépôt confirmé ! Tes fonds sont dans le compte sécurisé.');
+  } catch(e) {
+    showAlert('error', e.message || 'Dépôt annulé');
+    setStep(2);
+  }
+  setBusy(false);
+}
+
+async function doWithdraw() {
+  const val = parseFloat(document.getElementById('amountInput').value);
+  if (!val) return;
+  const shares = BigInt(Math.floor(val * 1e18));
+  setBusy(true); hideAlert();
+  try {
+    const data = '0xba087652' + encodeUint256(shares) + encodeAddr(account) + encodeAddr(account);
+    const txHash = await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: account, to: VAULT, data, gas: '0x493E0' }]
+    });
+    showAlert('success', 'Retrait en cours, confirmation attendue…');
+    await waitTx(txHash);
+    document.getElementById('amountInput').value = '';
+    await loadVaultData();
+    await loadUserData();
+    showAlert('success', '✅ Retrait confirmé ! Fonds reçus dans ton compte.');
+  } catch(e) {
+    showAlert('error', e.message || 'Retrait annulé');
+  }
+  setBusy(false);
+}
+
+async function waitTx(hash) {
+  for (let i=0; i<60; i++) {
+    const receipt = await rpc('eth_getTransactionReceipt', [hash]);
+    if (receipt) {
+      if (receipt.status === '0x0') throw new Error('Transaction échouée');
+      return receipt;
+    }
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  throw new Error('Délai dépassé — vérifie ton portefeuille');
+}
+
+function showAlert(type, msg) {
+  const box = document.getElementById('alertBox');
+  box.className = 'alert show alert-' + type;
+  document.getElementById('alertIcon').textContent = type==='success' ? '✓' : '✗';
+  document.getElementById('alertText').innerHTML = msg;
+}
+function hideAlert() { document.getElementById('alertBox').className = 'alert'; }
+</script>
+</body>
+</html>
